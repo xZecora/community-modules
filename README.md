@@ -22,3 +22,42 @@ this repository prioritizes:
 - collaboration
 - ecosystem growth
 - low contribution friction
+
+# usage (flake-based)
+
+to use this repository, add the following to your flake inputs:
+
+```
+{
+  inputs = {
+    # other inputs...
+    community-modules.url = "github:finix-community/community-modules";
+  }
+}
+```
+
+then, add the following to your outputs:
+
+```
+  outputs =
+    inputs@{
+      self,
+      nixpkgs,
+      finix,
+      community-modules, # <- NEW
+      ...
+    }:
+    {
+      nixosConfigurations.your-system = finix.lib.finixSystem {
+        # ...
+
+        modules = with inputs.community-modules.nixosModules; [
+          pipewire
+          v2rayn
+          amnezia-vpn
+          # other modules
+        ];
+
+        # ...
+      };
+```
