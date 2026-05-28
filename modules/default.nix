@@ -3,6 +3,7 @@ let
     builtins.removeAttrs (builtins.readDir ./programs) [
       "README.md"
 
+      # default modules
       "pipewire"
     ]
   );
@@ -12,14 +13,18 @@ let
       "README.md"
 
       # included by default
+      "amnezia-vpn"
     ]
   );
 
 in
 {
   default = {
-    # Modules included by default go here. everything else is manually imported by the end user.
-    imports = [ ./programs/pipewire ];
+    # Modules included by default go here
+    imports = [
+      ./programs/pipewire
+      ./services/amnezia-vpn
+    ];
   };
 }
 // programModules
