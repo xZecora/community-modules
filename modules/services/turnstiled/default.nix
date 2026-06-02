@@ -15,7 +15,7 @@ in
       type = lib.types.bool;
       default = false;
       description = ''
-        Whether to enable [turnstilel](${pkgs.turnstile.meta.homepage}).
+        Whether to enable [turnstilel](${cfg.package.meta.homepage}).
       '';
     };
 
@@ -45,39 +45,48 @@ in
 					debug = mkOption {
 						type = enum [ "yes" "no" ];
 						default = "no";
+						description = "Whether or not to enable debug output in turnstiled";
 					};
 					backend = mkOption {
 						type = enum [ "dinit" "runit" ];
 						default = "dinit";
-						description = "`runit` is not currently supported";
+						description = "`runit` is not currently supported, but changing this option may break things";
 					};
 					debug_stderr = mkOption {
 						type = enum [ "yes" "no" ];
 						default = "no";
+						description = "Whether or not to print debug to stderr in addition to stdout";
 					};
 					linger = mkOption {
 						type = enum [ "yes" "no" ];
 						default = "no";
+						description = "Whether or not the service manager should linger after user logout. Requires ${cfg.settings.manage_rundir} to be enabled";
 					};
 					rundir_path = mkOption {
 						type = str;
 						default = "/run/user/%u";
+						description = "Where the rundir is for the user. See [turnstiled](${cfg.package.meta.homepage}) documentation for available options";
 					};
 					manage_rundir = mkOption {
 						type = enum [ "yes" "no" ];
 						default = "no";
+						description = "Whether or not `turnstiled` should manage the runtime directory";
+
 					};
 					export_dbus_address = mkOption {
 						type = enum [ "yes" "no" ];
 						default = "yes";
+						description = "Whether or not to export the D-Bus session address to the environment of the service manager";
 					};
 					login_timeout = mkOption {
 						type = ints.unsigned;
 						default = 60;
+						description = "How long the service manager waits on initial processes (in seconds) before giving up.";
 					};
 					root_session = mkOption {
 						type = enum [ "yes" "no" ];
 						default = "no";
+						description = "Whether or not `turnstiled` acts for the root user.";
 					};
 				};
 			};
@@ -89,21 +98,25 @@ in
 					enable = mkOption {
 						type = bool;
 						default = true;
+						description = "Whether or not to use the dinit backend for `turnstiled`.";
 					};
 
 					service_dir = mkOption {
 						type = str;
 						default = "$HOME/.config/dinit.d";
+						description = "Users service dir for `turnstiled`'s `dinit` backend. This should include a way to differentiate per user unless all users have identical services.";
 					};
 
 					boot_dir = mkOption {
 						type = str;
 						default = "${cfg.dinit.service_dir}/boot.d";
+						description = "Users service boot dir for `turnstiled`'s `dinit` backend. This should include a way to differentiate per user unless all users have identical services.";
 					};
 		
 					system_boot_dir = mkOption {
 						type = path;
 						default = "/usr/lib/dinit.d/user/boot.d";
+						description = "Systems service boot dir for `turnstiled`'s `dinit` backend.";
 					};
 				};
 			};
