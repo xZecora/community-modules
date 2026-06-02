@@ -22,10 +22,8 @@ stdenv.mkDerivation {
 		meson 
 		ninja
 		pam
-		dinit
+		pkgs.dinit
 	];
-
-	buildInputs = [ pkgs.dinit pkgs.coreutils ];
 
 	mesonFlags = [
 		"-Ddefault_backend=dinit"

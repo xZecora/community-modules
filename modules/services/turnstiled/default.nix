@@ -41,7 +41,7 @@ in
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ cfg.package pkgs.dinit ];
+    environment.systemPackages = [ cfg.package (lib.lowPrio pkgs.dinit) ];
 
 		finit.tmpfiles.rules = [
 			"d ${cfg.systemBootDir} 0777"
@@ -91,7 +91,7 @@ session		required	pam_limits.so
       conditions = "service/syslogd/ready";
       log = true;
 			pid = "/run/turnstiled.pid";
-			path = with pkgs; [ cfg.package dinit coreutils ];
+			path = with pkgs; [ cfg.package (lib.lowPrio dinit) coreutils ];
     };
   };
 }
