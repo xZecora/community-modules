@@ -38,32 +38,102 @@ in
 			default = "/usr/lib/dinit.d/user/boot.d";
 			description = "Location of boot services used for all users";
 		};
+
+		settings = with lib; mkOption {
+			type = with types; submodule {
+				options = {
+					debug = mkOption {
+						type = enum [ "yes" "no" ];
+						default = "no";
+					};
+					backend = mkOption {
+						type = enum [ "dinit" "runit" ];
+						default = "dinit";
+						description = "`runit` is not currently supported";
+					};
+					debug_stderr = mkOption {
+						type = enum [ "yes" "no" ];
+						default = "no";
+					};
+					linger = mkOption {
+						type = enum [ "yes" "no" ];
+						default = "no";
+					};
+					rundir_path = mkOption {
+						type = str;
+						default = "/run/user/%u";
+					};
+					manage_rundir = mkOption {
+						type = enum [ "yes" "no" ];
+						default = "no";
+					};
+					export_dbus_address = mkOption {
+						type = enum [ "yes" "no" ];
+						default = "yes";
+					};
+					login_timeout = mkOption {
+						type = ints.unsigned;
+						default = 60;
+					};
+					root_session = mkOption {
+						type = enum [ "yes" "no" ];
+						default = "no";
+					};
+				};
+			};
+		};
+
+		dinit = with lib; mkOption {
+			type = with types; submodule {
+				options = {
+					enable = mkOption {
+						type = bool;
+						default = true;
+					};
+
+					service_dir = mkOption {
+						type = str;
+						default = "$HOME/.config/dinit.d";
+					};
+
+					boot_dir = mkOption {
+						type = str;
+						default = "${cfg.dinit.service_dir}/boot.d";
+					};
+		
+					system_boot_dir = mkOption {
+						type = path;
+						default = "/usr/lib/dinit.d/user/boot.d";
+					};
+				};
+			};
+		};
   };
 
   config = lib.mkIf cfg.enable {
-    environment.systemPackages = [ cfg.package (lib.lowPrio pkgs.dinit) ];
+    environment.systemPackages = [ cfg.package ] ++ lib.lists.optional cfg.dinit.enable (lib.lowPrio pkgs.dinit);
 
 		finit.tmpfiles.rules = [
-			"d ${cfg.systemBootDir} 0777"
+			"d ${cfg.dinit.system_boot_dir} 0777"
 		];
 
 		environment.etc = {
 			"turnstile/turnstiled.conf".text = ''
-debug = yes
-backend = dinit
-debug_stderr = yes
-linger = no
-rundir_path = /run/user/%u
-manage_rundir = no
-export_dbus_address = yes
-login_timeout = 0
-root_session = no
+debug = ${cfg.settings.debug}
+backend = ${cfg.settings.backend}
+debug_stderr = ${cfg.settings.debug_stderr}
+linger = ${cfg.settings.linger}
+rundir_path = ${cfg.settings.rundir_path}
+manage_rundir = ${cfg.settings.manage_rundir}
+export_dbus_address = ${cfg.settings.export_dbus_address}
+login_timeout = ${toString cfg.settings.login_timeout}
+root_session = ${cfg.settings.root_session}
 			'';
 
 			"turnstile/backend/dinit.conf".text = ''
-boot_dir="$HOME/.config/dinit.d/boot.d"
-system_boot_dir="${cfg.systemBootDir}"
-services_dir1="$HOME/.config/dinit.d"
+boot_dir="${cfg.dinit.boot_dir}"
+system_boot_dir="${cfg.dinit.system_boot_dir}"
+services_dir1="${cfg.dinit.service_dir}"
 services_dir2="/etc/dinit.d/user"
 services_dir3="/usr/local/lib/dinit.d/user"
 services_dir4="/usr/lib/dinit.d/user"
@@ -91,7 +161,7 @@ session		required	pam_limits.so
       conditions = "service/syslogd/ready";
       log = true;
 			pid = "/run/turnstiled.pid";
-			path = with pkgs; [ cfg.package (lib.lowPrio dinit) coreutils ];
+			path = with pkgs; [ cfg.package coreutils ] ++ lib.lists.optional cfg.dinit.enable (lib.lowPrio dinit);
     };
   };
 }

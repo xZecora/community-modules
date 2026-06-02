@@ -22,12 +22,14 @@ stdenv.mkDerivation {
 		meson 
 		ninja
 		pam
-		pkgs.dinit
+	];
+
+	buildInputs = with pkgs; [
+		dinit
 	];
 
 	mesonFlags = [
 		"-Ddefault_backend=dinit"
-		"-Dmanage_rundir=false"
 		"-Ddinit=enabled"
 		"-Dstatedir=/var/lib/turnstiled"
 		"-Dpam_moddir=./pam"
