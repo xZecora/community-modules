@@ -89,8 +89,9 @@ session		required	pam_limits.so
       description = "turnstiled, a user-service manager manager";
       command = "${cfg.package}/bin/turnstiled";
       conditions = "service/syslogd/ready";
-      log = false;
-			path = [ cfg.package pkgs.dinit ];
+      log = true;
+			pid = "/run/turnstiled.pid";
+			path = with pkgs; [ cfg.package dinit coreutils ];
     };
   };
 }
