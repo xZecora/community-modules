@@ -81,7 +81,7 @@ session		required	pam_limits.so
 
 		security.pam.services = lib.mkMerge [ 
 			{
-				login.text = "session optional ${cfg.package}/pam/pam_turnstile.so";
+				login.text = lib.mkAfter "session optional ${cfg.package}/pam/pam_turnstile.so";
 			}
 		];
 

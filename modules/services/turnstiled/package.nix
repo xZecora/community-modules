@@ -22,6 +22,7 @@ stdenv.mkDerivation {
 		meson 
 		ninja
 		pam
+		dinit
 	];
 
 	buildInputs = [ pkgs.dinit pkgs.coreutils ];
