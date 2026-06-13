@@ -3,6 +3,7 @@
 	pkgs,
   stdenv,
   fetchFromGitHub,
+	graphicalMonitor ? true,
 }:
 
 stdenv.mkDerivation {
@@ -35,7 +36,7 @@ stdenv.mkDerivation {
 		"-Dpam_moddir=./pam"
 	];
 
-	patches = [ ./patch.diff ];
+	patches = [ ./patch.diff ] ++ lib.lists.optional (!graphicalMonitor) (./remove_graphical_monitor.diff);
 
   doInstallCheck = false;
 

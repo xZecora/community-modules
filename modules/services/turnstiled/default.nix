@@ -7,7 +7,7 @@
 let
   cfg = config.services.turnstiled;
 
-  package = pkgs.callPackage ./package.nix { };
+  package = pkgs.callPackage ./package.nix { graphicalMonitor = cfg.dinit.enableGraphicalMonitor; };
 in
 {
   options.services.turnstiled = {
@@ -117,6 +117,12 @@ in
 						type = path;
 						default = "/usr/lib/dinit.d/user/boot.d";
 						description = "Systems service boot dir for `turnstiled`'s `dinit` backend.";
+					};
+
+					enableGraphicalMonitor = mkOption {
+						type = bool;
+						default = false;
+						description = "Whether or not to monitor environment changes to DISPLAY and WAYLAND_DISPLAY variables. Currently requires manually adding `dinitctl setenv VAR=$VAR`to any startup scripts for your graphical environment to function.";
 					};
 				};
 			};
