@@ -15,5 +15,10 @@ let
       "README.md"
     ]
   );
+  systemModules = builtins.mapAttrs (dir: _: ./profiles/${dir}) (
+    builtins.removeAttrs (builtins.readDir ./profiles) [
+      "README.md"
+    ]
+  );
 in
-programModules // serviceModules // profileModules
+programModules // serviceModules // profileModules // systemModules
