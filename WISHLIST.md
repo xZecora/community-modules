@@ -25,8 +25,9 @@ Copy the template below and fill in each section:
 - **Proposed Approach:** High-level outline of how it could be implemented
   (optional).
 - **Related:** Links to issues, PRs, or discussions (optional).
+```
 
-### [Miscellaneous modules]
+### Miscellaneous modules
 
 - **Status:** `proposed`
 - **Author:** @xZecora
@@ -38,4 +39,3 @@ Copy the template below and fill in each section:
   namespace, although having the modules be part of the namespace that they
   extend may make more sense.
 - **Related:** Brief discussion in discord development channel.
-```
