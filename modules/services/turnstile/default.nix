@@ -194,6 +194,13 @@ in
     ]
     ++ lib.optionals cfg.dinit.enable [ (lib.lowPrio cfg.dinit.package) ];
 
+    # Remove this when people are up to date
+    warnings = [
+      lib.optionals
+      (cfg.backend == "none")
+      "Turnstiled now defaults to \"none\" backend. You probably don't want this.\n You likely want to services.turnstile.backend = \"dinit\""
+    ];
+
     environment.etc = {
       "turnstile/turnstiled.conf".source =
         let
